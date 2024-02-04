@@ -1,3 +1,6 @@
 This is from Example one from practice Branch
 Changed remotely
-git p
+
+
+
+Not again from Branch
