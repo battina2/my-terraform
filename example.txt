@@ -6,3 +6,5 @@ Changed remotely
 Not again from Branch
 
 my third change to test merging with multiple changes  from branch
+
+aditing from conole example1
