@@ -1,6 +1,8 @@
 provider "azurerm" {
       features = {}
 }
+data "azurerm_client_config" "current" {
+}
 
 # resource Group creation
 
@@ -24,25 +26,27 @@ resource "azurerm_subnet" "subnet" {
   virtual_network_name = azurerm_virtual_network.vnet.name
 
 }
-#key Vault
- resource "azurerm_key_vault" "keyvault" {
-   name                       = "myKeyvault"
-   location                   = "east us"
-   resource_group_name        = azurerm_resource_group.rg.name
-   sku_name                   = "standard"
-   tenant_id                  = data.azurerm_client_config.current.tenant_id
-   soft_delete_retention_days = 7
-   purge_protection_enabled   = false
-   access_policy {
-     tenant_id = data.azurerm_client_config.current.tenant_id
-     object_id = data.azurerm_client_config.current.object_id
+# Create an Azure Key Vault
+resource "azurerm_key_vault" "keyvault" {
+  name                        = "myKeyVault"
+  resource_group_name         = azurerm_resource_group.rg.name
+  location                    = azurerm_resource_group.rg.location
+  enabled_for_disk_encryption = true
+  enabled_for_template_deployment = true
+  tenant_id                   = data.azurerm_client_config.current.tenant_id
+  sku_name                    = "standard"
 
-     secret_permissions = [
-       "get",
-       "list",
-     ]
-   }
- }
+  access_policy {
+    tenant_id = data.azurerm_client_config.current.tenant_id
+    object_id = data.azurerm_client_config.current.object_id
+
+    secret_permissions = [
+      "get",
+      "list",
+    ]
+  }
+}
+
 # Secret in Key Vault
 resource "azurerm_key_vault_secret" "secret" {
   name         = "mySecret"
